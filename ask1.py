@@ -48,9 +48,86 @@ def bisection(f, a, b, steps):
 steps = get_number_of_steps(5, 0., 3.)
 
 print("Bisection method:")
-print(bisection(f, 0., 1.1, steps))
-print(bisection(f, 1.1, 3., steps))
+print(bisection(f, 0., 1., steps))
+print(bisection(f, 1., 3., steps))
+
 
 # Newton-Raphson method
 
 
+def df(x): return 2*e**(x-2)*(7*x+1)-21*x**2+40*x-26
+def df2(x): return 2*e**(x-2)*(7*x+8)-42*x+40
+def df3(x): return 2*e**(x-2)*(7*x+15)-42
+
+
+plt.close()
+fig, (ax1, ax2) = plt.subplots(1, 2)
+ax1.plot(t, df(t))
+ax1.grid()
+ax1.set_title("f'(x)")
+ax2.plot(t, df2(t))
+ax2.grid()
+ax2.set_title("f''(x)")
+# plt.show()
+
+
+def newton_raphson(f, df, x0, tol, root_multiplicity=1):
+    """
+    Implements the Newton-Raphson method or the variation of the method in case root_multiplicity>1
+    :param f: the function
+    :param df: the derivative of the function
+    :param x0: the starting point
+    :param tol: the tolerance
+    :param root_multiplicity: the multiplictiy of the root to be calculated (default is 1)
+    :return: the calculated root and the actual number of steps the algorithm was executed
+    """
+    if f(x0) == 0:
+        return x0, 0
+
+    steps = 1
+    x_n = x0
+    x_n1 = x_n - root_multiplicity*f(x_n)/df(x_n)
+    while abs(x_n1-x_n) > tol and f(x_n1) != 0:
+        x_n = x_n1
+        x_n1 = x_n - root_multiplicity*f(x_n)/df(x_n)
+        steps += 1
+    return x_n1, steps
+
+
+tol = 0.5*10**(-5)  # tolerance of 5 decimal digits
+
+print('\nNewton-Raphson method:')
+print(newton_raphson(f, df, 0., tol))
+print(newton_raphson(f, df, 3., tol))
+print(newton_raphson(f, df, 3., tol, 3))
+
+
+# Secant method
+
+
+def secant(f, x0, x1, tol):
+    """
+    Implements the secant method
+    :param f: the function
+    :param x0: the first starting point
+    :param x1: the second starting point
+    :param tol: the tolerance
+    :return: the calculated root and the actual number of steps the algorithm was executed
+    """
+    steps = 1
+    x = x0
+    x_n = x1
+    x_n1 = x_n - f(x_n)*(x_n-x)/(f(x_n)-f(x))
+    while abs(x_n1 - x_n) > tol and f(x_n1) != 0:
+        x = x_n
+        x_n = x_n1
+        x_n1 = x_n - f(x_n)*(x_n-x)/(f(x_n)-f(x))
+        steps += 1
+
+    return x_n1, steps
+
+
+print('\nSecant method:')
+print(secant(f, 0., 1., tol))
+print(secant(f, 1., 3., tol))
+print(secant(f, 1.5, 2.5, tol))
