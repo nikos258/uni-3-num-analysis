@@ -13,6 +13,15 @@ plt.grid()
 
 
 def newton_raphson2(f, df, d2f, x0, tol):
+    """
+    Implements the variation of the Newton-Raphson method
+    :param f: the function
+    :param df: the derivative of the function
+    :param d2f: the second derivative of the function
+    :param x0: the starting point
+    :param tol: the tolerance
+    :return: the calculated root and the actual number of steps the algorithm was executed
+    """
     if f(x0) == 0:
         return x0, 0
 
@@ -27,6 +36,14 @@ def newton_raphson2(f, df, d2f, x0, tol):
 
 
 def bisection2(f, a, b, tol):
+    """
+    Implements the variation of the method of bisection.
+    :param f: the function
+    :param a: the starting point of the interval
+    :param b: the ending point of the interval
+    :param tol: the tolerance
+    :return: the calculated root and the actual number of steps the algorithm was executed
+    """
     steps = 0
     m = a
     while (b-a) > tol:
@@ -43,6 +60,14 @@ def bisection2(f, a, b, tol):
 
 
 def secant2(f, x0, x1, x2, tol):
+    """
+    Implements the variation of the secant method
+    :param f: the function
+    :param x0: the first starting point
+    :param x1: the second starting point
+    :param tol: the tolerance
+    :return: the calculated root and the actual number of steps the algorithm was executed
+    """
     steps = 1
     x_n = x0
     x_n1 = x1
@@ -102,7 +127,7 @@ iterations = set()
 for i in range(20):
     iterations.add(bisection2(f, -1.6, -1.2, tolerance)[1])
 
-# print("Different iterations of the variation of the bisection method:", iterations)
+print("Different iterations of the variation of the bisection method:", iterations)
 
 
 # Subsection 3
