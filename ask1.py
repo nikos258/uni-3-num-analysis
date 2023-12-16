@@ -25,39 +25,43 @@ def get_number_of_steps(digits_of_accuracy, a, b):
     return math.ceil(math.log2((b-a)*10**(digits_of_accuracy+1)/5))
 
 
-def bisection(f, a, b, steps):
+def bisection(f, a, b, tol):
     """
     Implements the method of bisection.
     :param f: the function
     :param a: the starting point of the interval
     :param b: the ending point of the interval
-    :param steps: the number of steps the algorithm was executed
+    :param tol: the tolerance
     :return: the calculated root and the actual number of steps the algorithm was executed
     """
-    for i in range(steps):
-        m = (a+b)/2.0
+    steps = 0
+    m = a
+    while (b-a)/2 > tol:
+        steps += 1
+        m = (a+b)/2
         if f(m) == 0:
-            return m, i+1
-        if np.sign(f(a))*np.sign(f(m)) < 0:
+            return m, steps
+        if np.sign(f(a)) * np.sign(f(m)) < 0:
             b = m
         else:
             a = m
-    return m, i+1
+
+    return m, steps
 
 
-steps = get_number_of_steps(5, 0., 3.)
+tolerance = 0.5*10**(-5)  # tolerance of 5 decimal digits
 
 print("Bisection method:")
-print(bisection(f, 0., 1., steps))
-print(bisection(f, 1., 3., steps))
+print(bisection(f, 0., 1., tolerance))
+print(bisection(f, 1., 3., tolerance))
 
 
 # Newton-Raphson method
 
 
 def df(x): return 2*e**(x-2)*(7*x+1)-21*x**2+40*x-26
-def df2(x): return 2*e**(x-2)*(7*x+8)-42*x+40
-def df3(x): return 2*e**(x-2)*(7*x+15)-42
+def d2f(x): return 2*e**(x-2)*(7*x+8)-42*x+40
+def d3f(x): return 2*e**(x-2)*(7*x+15)-42
 
 
 plt.close()
@@ -65,7 +69,7 @@ fig, (ax1, ax2) = plt.subplots(1, 2)
 ax1.plot(t, df(t))
 ax1.grid()
 ax1.set_title("f'(x)")
-ax2.plot(t, df2(t))
+ax2.plot(t, d2f(t))
 ax2.grid()
 ax2.set_title("f''(x)")
 # plt.show()
@@ -94,12 +98,10 @@ def newton_raphson(f, df, x0, tol, root_multiplicity=1):
     return x_n1, steps
 
 
-tol = 0.5*10**(-5)  # tolerance of 5 decimal digits
-
 print('\nNewton-Raphson method:')
-print(newton_raphson(f, df, 0., tol))
-print(newton_raphson(f, df, 3., tol))
-print(newton_raphson(f, df, 3., tol, 3))
+print(newton_raphson(f, df, 0., tolerance))
+print(newton_raphson(f, df, 3., tolerance))
+print(newton_raphson(f, df, 3., tolerance, 3))
 
 
 # Secant method
@@ -128,6 +130,6 @@ def secant(f, x0, x1, tol):
 
 
 print('\nSecant method:')
-print(secant(f, 0., 1., tol))
-print(secant(f, 1., 3., tol))
-print(secant(f, 1.5, 2.5, tol))
+print(secant(f, 0., 1., tolerance))
+print(secant(f, 1., 3., tolerance))
+print(secant(f, 1.5, 2.5, tolerance))
