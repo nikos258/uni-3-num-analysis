@@ -2,6 +2,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
+# PA = LU
+
 def place_max_to_pivot(A, j, P, L):
     """
     Swaps rows as needed such that the pivot element of the matrix A in the column j has the largest absolut value
@@ -91,25 +93,126 @@ def solve_system(A, b):
     return x
 
 
-B = np.array([[2, 1, 5],
-              [4, 4, -4],
-              [1, 3, 1]])
+# Cholesky
 
-A = np.array([[7, 3, -1, 2], [3, 8, 1, -4], [-1, 1, 4, -1], [2, -4, -1, 6]])
+def cholesky(A):
+    """
+    It performs Cholesky decomposition on a symmetrical and positive definite matrix A and returns the lower triangular
+    matrix L, which satisfies the equation A = LL^T.
+    :param A: a symmetrical and positive definite matrix
+    :return: the lower triangular matrix L of the Cholesky decomposition of the matrix A
+    """
+    shape = A.shape[0]
+    A = np.array(A, dtype=float)
+    R = np.zeros((shape, shape), dtype=float)
+    for k in range(shape):
+        if A[k, k] < 0:
+            return None
+        R[k, k] = np.sqrt(A[k, k])
+        u = np.array([[A[k, j] / R[k, k] for j in range(k+1, shape)]])
+        i = 0
+        for j in range(k+1, shape):
+            R[k, j] = u[0, i]
+            i += 1
 
-C = np.array([[1, 1],
-              [0, -7]])
+        uuT = np.dot(u.T, u)  # multiplies the column vector u.T with the row vector u
+        row = 0
+        for i in range(k+1, shape):
+            col = 0
+            for j in range(k+1, shape):
+                A[i, j] = A[i, j] - uuT[row, col]
+                col += 1
+            row += 1
 
-b = np.array([5, 0, 6])
+    return R.T
 
-print(solve_system(B, b))
 
-# P, L, U = palu(C)
-# print(P)
-# print(L)
-# print(U)
-#
-#
-# print("\n", np.dot(P, C), '\n', np.dot(L, U))
+# Gauss-Seidel method
 
+def gauss_seidel(A, b, x0, tol):
+    """
+    Solves the system of equations Ax=b using the Gauss-Seidel method
+    :param A: a square matrix
+    :param b: the vector b
+    :param x0: an initial guess for the solution of the system
+    :param tol: the toleration
+    :return: the solution vector x
+    """
+    shape = A.shape[1]
+    x = np.array(x0)
+    norm = tol + 1
+
+    while norm > tol:
+        x0 = np.array(x)
+        for i in range(shape):
+            s1 = 0
+            for j in range(i):
+                s1 += A[i, j] * x[j]
+
+            s2 = 0
+            for j in range(i+1, shape):
+                s2 += A[i, j] * x[j]
+
+            x[i] = (b[i] - s1 - s2) / A[i, i]
+
+        norm = infinite_norm(x - x0)
+
+    return x
+
+
+def infinite_norm(x):
+    """
+    Calculates the infinite norm of the vector x
+    :param x: a vector
+    :return: the infinite norm of the vector x
+    """
+    max1 = -1
+    for i in range(x.shape[0]):
+        element = abs(x[i])
+        if element > max1:
+            max1 = element
+    return max1
+
+
+# Gauss-Seidel for the 10x10 matrix A
+n = 10
+A = np.zeros((n, n))
+for i in range(n):
+    A[i, i] = 5
+    try:
+        A[i+1, i] = -2
+    except IndexError:
+        pass
+    try:
+        A[i, i+1] = -2
+    except IndexError:
+        pass
+
+b = np.ones(n, dtype=float)
+b[0] = 3
+b[9] = 3
+x0 = np.zeros(n)
+
+print(gauss_seidel(A, b, x0, 0.00005))
+
+# Gauss-Seidel for the 10000x10000 matrix A
+n = 10000
+A = np.zeros((n, n))
+for i in range(n):
+    A[i, i] = 5
+    try:
+        A[i+1, i] = -2
+    except IndexError:
+        pass
+    try:
+        A[i, i+1] = -2
+    except IndexError:
+        pass
+
+b = np.ones(n, dtype=float)
+b[0] = 3
+b[9] = 3
+x0 = np.zeros(n)
+
+# print(gauss_seidel(A, b, x0, 0.00005))
 

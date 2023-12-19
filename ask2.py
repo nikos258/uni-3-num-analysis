@@ -102,8 +102,8 @@ tolerance = 0.5*10**(-5)
 print("Variation of the Newton-Raphson method:")
 print(newton_raphson2(f, df, d2f, -2, tolerance))
 print(newton_raphson2(f, df, d2f, -1, tolerance))
-print(newton_raphson2(f, df, d2f, 0., tolerance))
-print(newton_raphson2(f, df, d2f, 0.9, tolerance))
+print(newton_raphson2(f, df, d2f, 0.13, tolerance))
+print(newton_raphson2(f, df, d2f, 0.7, tolerance))
 print(newton_raphson2(f, df, d2f, 2, tolerance))
 
 
@@ -123,11 +123,11 @@ print(secant2(f, 1., 1.2, 1.4, tolerance))
 
 # Subsection 2
 
-iterations = set()
+iterations = list()
 for i in range(20):
-    iterations.add(bisection2(f, -1.6, -1.2, tolerance)[1])
+    iterations.append(bisection2(f, -1.6, -1.2, tolerance)[1])
 
-print("Different iterations of the variation of the bisection method:", iterations)
+print("\nDifferent iterations of the variation of the bisection method:", iterations)
 
 
 # Subsection 3
@@ -205,8 +205,8 @@ def secant(f, x0, x1, tol):
 print("\nNormal Newton-Raphson")
 print(newton_raphson(f, df, -2, tolerance))
 print(newton_raphson(f, df, -1, tolerance))
-print(newton_raphson(f, df, 0., tolerance))
-print(newton_raphson(f, df, 0.9, tolerance))
+print(newton_raphson(f, df, 0.13, tolerance))
+print(newton_raphson(f, df, 0.7, tolerance))
 print(newton_raphson(f, df, 2, tolerance))
 
 print("\nNormal Bisection Method")
