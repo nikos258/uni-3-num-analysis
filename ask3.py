@@ -193,6 +193,7 @@ b[0] = 3
 b[9] = 3
 x0 = np.zeros(n)
 
+print("n=10:")
 print(gauss_seidel(A, b, x0, 0.00005))
 
 # Gauss-Seidel for the 10000x10000 matrix A
@@ -214,5 +215,6 @@ b[0] = 3
 b[9] = 3
 x0 = np.zeros(n)
 
-# print(gauss_seidel(A, b, x0, 0.00005))
+print("n=10000:")
+print(gauss_seidel(A, b, x0, 0.00005))
 
