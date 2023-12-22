@@ -1,7 +1,6 @@
 import numpy as np
 from matplotlib import pyplot as plt
 
-# 4.2
 
 def power(A, tol):
     """
@@ -37,7 +36,7 @@ def power(A, tol):
     return b, l_before
 
 
-def getGoogle(A, q):
+def get_google(A, q):
     n = A.shape[0]
     # calculates the sum of every row of the matrix A
     row_sum = np.zeros(n)
@@ -53,9 +52,10 @@ def getGoogle(A, q):
     return G
 
 
+# 4.2
+
 toleration = 0.5 * 10**(-15)
 
-n = 15
 A = np.array([[0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
               [0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
               [0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0],
@@ -73,14 +73,13 @@ A = np.array([[0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
               [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0]])
 
 q = 0.15
-G = getGoogle(A, q)
+G = get_google(A, q)
 p, eigenvalue = power(G, toleration)
 p = p/np.sum(p)
 
 # print("4.2:")
 # print("The normalised eigenvector: ", p)
 # print("The eigenvalue: ", eigenvalue)
-
 
 
 # 4.3
@@ -92,7 +91,7 @@ A3[11-1, 15-1] = 0
 # A3[10, 9] = 1
 # A3[11-1, 15-1] = 0
 
-G3 = getGoogle(A3, q)
+G3 = get_google(A3, q)
 
 p3, eigenvalue3 = power(G3, toleration)
 p3 = p/np.sum(p3)
@@ -118,11 +117,38 @@ p3 = p/np.sum(p3)
 
 # 4.5
 
-# q = 0.15
-# A5 = A.copy()
-# A5[8-1, 11-1] = 3
-# A5[12-1, 11-1] = 3
-# p5, eigenvalue5 = power(getGoogle(A5, q), toleration)
-# p5 = p5 / np.sum(p5)
-# print("4.5:")
-# print("the new rank of page 11: ", p5[11-1])
+q = 0.15
+A5 = A.copy()
+A5[8-1, 11-1] = 3
+A5[12-1, 11-1] = 3
+p5, eigenvalue5 = power(get_google(A5, q), toleration)
+p5 = p5 / np.sum(p5)
+# print("\n4.5:")
+# print("the new eigenvector: ", p5)
+# for i in range(15):
+#     print(i+1, ': ', p5[i])
+
+
+# 4.6
+
+n = 14
+A6 = np.array([[0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+               [0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0],
+               [0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0],
+               [0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
+               [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+               [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0],
+               [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0],
+               [0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0],
+               [0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+               [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+               [0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0, 0, 0],
+               [0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0],
+               [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1],
+               [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0]])
+
+q = 0.15
+p6, eigenvalue6 = power(get_google(A6, q), toleration)
+p6 = p6 / np.sum(p6)
+print("\n4.6:")
+print(p6)
