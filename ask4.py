@@ -2,41 +2,31 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 
-def power(A, tol):
+def power_method(A, k):
     """
-    Implements the power method to find the eigenvalue with the largest absolut value and the respective eigenvalue of
-    the matrix A.
+    Implements the power method to find the eigenvalue with the largest absolut value and the respective eigenvector.
     :param A: the matrix
-    :param tol: the toleration
-    :return: the calculated eigenvector and eigenvalue
+    :param k: the iteration of the algorithm
+    :return: the eigenvector and the eigenvalue
     """
     shape = A.shape[0]
-    b = np.ones(shape)
-    l = b[0]
-    condition = tol + 1  # this condition ensures at least one iteration of the while loop
+    x = np.ones(shape)  # creates a starting vector full of ones
+    for i in range(k):
+        u = x / np.linalg.norm(x)  # normalises the vector
+        x = np.dot(A, u)
+        l = np.dot(u, np.matrix(x).T)
 
-    while condition > tol:
-        l_before = l
-        b = np.dot(A, b)
-
-        # finds the first non-zero value of the vector
-        i = 0
-        while i < shape:
-            if b[i] == 0:
-                i += 1
-            else:
-                l = b[i]
-                break
-        else:
-            return b, 0
-
-        b /= l  # normalizes the vector with the calculated eigenvalue
-        condition = abs(l - l_before)
-
-    return b, l_before
+    u = x / np.linalg.norm(x)  # normalises the vector
+    return u, l
 
 
 def get_google(A, q):
+    """
+    Calculates the Google matrix G based on the adjacency matrix A and the jumping probability q.
+    :param A: the adjacency matrix
+    :param q: the jumping probability q
+    :return: the Google matrix G
+    """
     n = A.shape[0]
     # calculates the sum of every row of the matrix A
     row_sum = np.zeros(n)
@@ -54,7 +44,7 @@ def get_google(A, q):
 
 # 4.2
 
-toleration = 0.5 * 10**(-15)
+iterations = 50
 
 A = np.array([[0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
               [0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -74,63 +64,66 @@ A = np.array([[0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
 
 q = 0.15
 G = get_google(A, q)
-p, eigenvalue = power(G, toleration)
-p = p/np.sum(p)
+p, eigenvalue = power_method(G, iterations)
+p = p / np.sum(p)  # normalises the eigenvector p
 
-# print("4.2:")
-# print("The normalised eigenvector: ", p)
-# print("The eigenvalue: ", eigenvalue)
+print("4.2:")
+print("The normalised eigenvector: ", p)
+print("The eigenvalue: ", eigenvalue)
 
 
 # 4.3
 
+# makes a copy of the adjacency matrix A and changes some edges
 A3 = A.copy()
-A3[10-1, 11-1] = 1
+A3[10-1, 1-1] = 1
 A3[11-1, 1-1] = 1
-A3[11-1, 15-1] = 0
-# A3[10, 9] = 1
-# A3[11-1, 15-1] = 0
+A3[13-1, 1-1] = 1
+A3[15-1, 1-1] = 1
+A3[1-1, 2-1] = 0
 
+q = 0.15
 G3 = get_google(A3, q)
+p3, eigenvalue3 = power_method(G3, iterations)
+p3 = p3 / np.sum(p3)
 
-p3, eigenvalue3 = power(G3, toleration)
-p3 = p/np.sum(p3)
-# print(A3)
-# print(p3, eigenvalue3)
-# print(p3[1-1], p[1-1])
+print("\n4.3:")
+print("The new eigenvector: ", p3)
+print("The new eigenvalue: ", eigenvalue3)
 
 
 # 4.4
 
-# q = 0.02
-# p4a, eigenvalue4a = power(getGoogle(A, q), toleration)
-# p4a = p4a / np.sum(p4a)
-# print("4.4a:")
-# print("difference ", p4a - p)
-#
-# q = 0.6
-# p4b, eigenvalue4b = power(getGoogle(A, q), toleration)
-# p4b = p4b / np.sum(p4b)
-# print("4.4b:")
-# print("difference ", p4b - p)
+q = 0.02
+p4a, eigenvalue4a = power_method(get_google(A3, q), iterations)
+p4a = p4a / np.sum(p4a)
+print("\n4.4a:")
+print("The new eigenvector: ", p4a)
+
+q = 0.6
+p4b, eigenvalue4b = power_method(get_google(A3, q), iterations)
+p4b = p4b / np.sum(p4b)
+print("\n4.4b:")
+print("The new eigenvector: ", p4b)
 
 
 # 4.5
 
+# makes a copy of the adjacency matrix A and changes the values of some links
 q = 0.15
 A5 = A.copy()
 A5[8-1, 11-1] = 3
 A5[12-1, 11-1] = 3
-p5, eigenvalue5 = power(get_google(A5, q), toleration)
+
+p5, eigenvalue5 = power_method(get_google(A5, q), iterations)
 p5 = p5 / np.sum(p5)
-# print("\n4.5:")
-# print("the new eigenvector: ", p5)
-# for i in range(15):
-#     print(i+1, ': ', p5[i])
+print("\n4.5:")
+print("the new eigenvector", p5)
 
 
 # 4.6
 
+# makes the new adjacency matrix A which lacks the 10th page
 n = 14
 A6 = np.array([[0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
                [0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0],
@@ -148,7 +141,7 @@ A6 = np.array([[0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0]])
 
 q = 0.15
-p6, eigenvalue6 = power(get_google(A6, q), toleration)
+p6, eigenvalue6 = power_method(get_google(A6, q), iterations)
 p6 = p6 / np.sum(p6)
 print("\n4.6:")
 print(p6)
