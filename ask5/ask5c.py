@@ -94,11 +94,17 @@ def solve_system(A, b):
 
 
 def least_squares_method(points, degree):
+    """
+    Calculates a polynomial of a certain degree based on a set of given points using the least squares method
+    :param points:the points on the cartesian plane
+    :param degree: the degree of the approximation polynomial
+    :return: the calculated polynomial and the norm of the remainder vector b-Ax
+    """
     n = len(points)
     A = np.ones((n, degree+1), dtype=np.float64)
     b = np.zeros((n, 1), dtype=np.float64)
 
-    for i in range(n):
+    for i in range(n):  # makes the coefficient matrix A and the vector b
         x = points[i][0]
         for j in range(1, degree+1):
             A[i][j] = x
@@ -107,9 +113,26 @@ def least_squares_method(points, degree):
 
     C = np.dot(A.T, A)
     d = np.dot(A.T, b)
-    return Polynomial(solve_system(C, d))
+    x = solve_system(C, d)  # the solution vector x
+    r = np.linalg.norm(b.T-np.dot(A, x), 2)  # the norm of the remainder vector b-Ax
+    return Polynomial(x), r
 
 
-# points = ((1, 2), (-1, 1), (1, 3))
-points = ((-1, 1), (0, 0), (1, 0), (2, -2))
-print(least_squares_method(points, 2))
+points = ((-np.pi, 0.), (-2.5, -0.59847), (-np.pi/2, -1.), (-1.4, -0.98544), (-0.6, -0.56464), (0., 0.), (1., 0.84147), (np.pi/2, 1.), (2.7, 0.42737), (np.pi, 0.))
+polynomial, r = least_squares_method(points, 8)
+t = np.linspace(-np.pi, np.pi, 200)
+
+# calculates the absolut value of the error of the least squares polynomial
+error = list()
+for i in range(200):
+    sin = np.sin(t[i], dtype=np.float64)
+    error.append(abs(polynomial(t[i]) - sin))
+
+print("The remainder vector norm: {:.16f}".format(r))
+print("Minimum absolut value of the error: {:.16f}".format(min(error), dtype=np.float64))
+print("Maximum absolut value of the error: {:.16f}".format(max(error), dtype=np.float64))
+print("Mean absolut value of the error: {:.16f}".format(np.mean(error, dtype=np.float64)))
+
+plt.plot(t, error)
+plt.title("Absolut value of the error")
+plt.show()

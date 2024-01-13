@@ -179,7 +179,14 @@ def get_splines(points):
     return polynomials
 
 
-def foo(x, splines, points):
+def get_value_from_splines(x, splines, points):
+    """
+    Calculates the value of each element of x through the appropriate spline polynomial based on a set of points
+    :param x: the x values of the points
+    :param splines: a list of spline polynomials
+    :param points: the points with which the splines were calculated
+    :return: the list of the images
+    """
     y = list()
     for element in x:
         for i in range(1, len(points)):
@@ -194,23 +201,16 @@ splines = get_splines(points)
 
 t = np.linspace(-np.pi, np.pi, 200)
 
+# makes an error list for the 200 points of t
 error = list()
 for i in range(200):
-    sin = round(np.sin(t[i], dtype=np.float64), 5)
-    error.append(abs(foo(t, splines, points)[i] - sin))
+    sin = np.sin(t[i], dtype=np.float64)
+    error.append(abs(get_value_from_splines(t, splines, points)[i] - sin))
 
-print("Maximum absolut value of the error: {:.7f}".format(max(error), dtype=np.float64))
-print("Maximum absolut value of the error: {:.7f}".format(np.mean(error, dtype=np.float64)))
+print("Minimum absolut value of the error: {:.16f}".format(min(error), dtype=np.float64))
+print("Maximum absolut value of the error: {:.16f}".format(max(error), dtype=np.float64))
+print("Mean absolut value of the error: {:.16f}".format(np.mean(error, dtype=np.float64)))
 
-fig, (ax1, ax2) = plt.subplots(1, 2)
-ax1.plot(t, foo(t, splines, points))
-
-sin = list()
-for i in t:
-    sin.append(round(np.sin(i), 5))
-
-ax1.plot(t, sin)
-
-ax2.plot(t, error)
-ax2.set_title("Absolut value of the error")
+plt.plot(t, error)
+plt.title("Absolut value of the error")
 plt.show()

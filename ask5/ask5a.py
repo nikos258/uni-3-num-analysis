@@ -9,7 +9,7 @@ def lagrange_polynomial(points):
     """
     Calculates the Lagrange polynomial based on a list of given points.
     :param points: the points on the cartesian plane
-    :return:
+    :return: the final Lagrange polynomial
     """
     n = len(points)
     lagrange = Polynomial(np.zeros(n))  # makes a zero polynomial of degree n-1
@@ -34,13 +34,15 @@ p = lagrange_polynomial(points)
 
 t = np.linspace(-np.pi, np.pi, 200)
 
+# calculates the absolut value of the error of the Lagrange polynomial
 error = list()
 for i in range(200):
-    sin = round(np.sin(t[i], dtype=np.float64), 5)
+    sin = np.sin(t[i], dtype=np.float64)
     error.append(abs(p(t[i]) - sin))
 
-print("Maximum absolut value of the error: {:.7f}".format(max(error), dtype=np.float64))
-print("Maximum absolut value of the error: {:.7f}".format(np.mean(error, dtype=np.float64)))
+print("Minimum absolut value of the error: {:.16f}".format(min(error), dtype=np.float64))
+print("Maximum absolut value of the error: {:.16f}".format(max(error), dtype=np.float64))
+print("Mean absolut value of the error: {:.16f}".format(np.mean(error, dtype=np.float64)))
 
 plt.plot(t, error)
 plt.title("Absolut value of the error")
