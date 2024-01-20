@@ -120,23 +120,44 @@ def least_squares_method(points, degree):
 
 points = ((0, 7.4650), (1, 7.4800), (2, 7.5950), (3, 7.7600), (4, 7.7400),
           (5, 7.9800), (6, 8.0000), (7, 8.1700), (8, 8.0500), (9, 8.1250))
-approximations = list()
+approximation_polynomials = list()
 for i in range(2, 5):
-    approximations.append(least_squares_method(points, i))
+    approximation_polynomials.append(least_squares_method(points, i))
 
-# plt.plot(points)
-# plt.show()
-
-t = np.linspace(0, 15)
+# plots the polynomials from the least squares method
+t = np.linspace(0, 15, 100)
 for i in range(2, 5):
     y = list()
     for x in t:
-        y.append(approximations[i-2][0](x))
+        y.append(approximation_polynomials[i - 2][0](x))
     plt.plot(t, y)
 
-x_points = list(point[0] for point in points) + [11, 15]
-y_points = list(point[1] for point in points) + [8.0450, 8.3]
-plt.scatter(x_points, y_points, marker='^', color='red')
+x_points = list(point[0] for point in points)
+y_points = list(point[1] for point in points)
+plt.scatter(x_points, y_points, marker='^', color='red')  # plots the known stock prices of the previous 10 days
+plt.scatter((11, 15), (8.0450, 8.3), marker='^', color='red', edgecolors='black')  # plots the actual stock prices of days 11 and 15
 plt.legend(['second degree', 'third degree', 'fourth degree'], loc='lower left')
-plt.show()
 
+# calculates the error for the first 10 days for each polynomial and stores it in a list
+error_list = list()
+for i in range(2, 5):
+    error = list()
+    for point in points:
+        error.append(abs(point[1] - approximation_polynomials[i-2][0](point[0])))
+    error_list.append(error)
+
+print(f'Mean error (second degree): {np.mean(error_list[0]):.7f}')
+print(f'Mean error (third degree): {np.mean(error_list[1]):.7f}')
+print(f'Mean error (fourth degree): {np.mean(error_list[2]):.7f}')
+
+print('\n21-2 forecast:')  # day 11
+print(f'(second degree): {approximation_polynomials[0][0](11):.7f} error: {8.045-approximation_polynomials[0][0](11):.7f}')
+print(f'(third degree): {approximation_polynomials[1][0](11):.7f} error: {8.045-approximation_polynomials[1][0](11):.7f}')
+print(f'(fourth degree): {approximation_polynomials[2][0](11):.7f} error: {8.045-approximation_polynomials[2][0](11):.7f}')
+
+print('\n28-2 forecast:')  # day 15
+print(f'(second degree): {approximation_polynomials[0][0](15):.7f} error: {8.3-approximation_polynomials[0][0](15):.7f}')
+print(f'(third degree): {approximation_polynomials[1][0](15):.7f} error: {8.3-approximation_polynomials[1][0](15):.7f}')
+print(f'(fourth degree): {approximation_polynomials[2][0](15):.7f} error: {8.3-approximation_polynomials[2][0](15):.7f}')
+
+plt.show()

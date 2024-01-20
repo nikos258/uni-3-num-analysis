@@ -23,4 +23,4 @@ def simpson_method(function, a, b, n):
     return (b-a)/(3*n) * (function(partition[0]) + function(partition[n]) + 2*s1 + 4*s2)
 
 
-print(simpson_method(np.sin, 0, np.pi/2, 10))
+print("The value of the integral: ", simpson_method(np.sin, 0, np.pi/2, 10))
